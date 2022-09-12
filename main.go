@@ -26,6 +26,7 @@ func main() {
 	firstVerAPI := router.Group("/api/v1")
 
 	firstVerAPI.POST("/auth/signup", userHandler.SignUpHandler)
+	firstVerAPI.POST("/auth/login", userHandler.LogInHandler)
 
 	router.Run()
 }
