@@ -5,6 +5,7 @@ type UserFormatterResponse struct {
 	Name       string `json:"name"`
 	Occupation string `json:"occupation"`
 	Email      string `json:"email"`
+	Avatar	   string `json:"avatar"`
 }
 
 type UserLoginFormatterResponse struct {
@@ -13,12 +14,13 @@ type UserLoginFormatterResponse struct {
 	Token string `json:"token"`
 }
 
-func FormatUserSignupResponse(user User) UserFormatterResponse {
+func FormatUserSignupResponse(user User, imageLocation string) UserFormatterResponse {
 	format := UserFormatterResponse{
 		ID:         user.ID,
 		Name:       user.Name,
 		Occupation: user.Occupation,
 		Email:      user.Email,
+		Avatar:		imageLocation,
 	}
 
 	return format
