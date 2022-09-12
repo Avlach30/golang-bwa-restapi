@@ -24,11 +24,11 @@ func FormatUserSignupResponse(user User) UserFormatterResponse {
 	return format
 }
 
-func FormatUserLoginResponse(user User) UserLoginFormatterResponse {
+func FormatUserLoginResponse(user User, token string) UserLoginFormatterResponse {
 	format := UserLoginFormatterResponse{
 		ID:   user.ID,
 		Email: user.Email,
-		Token: "Sometokenamazing",
+		Token: token,
 	}
 
 	return format
