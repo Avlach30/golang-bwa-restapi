@@ -11,6 +11,7 @@ type Service interface {
 	LogIn(input LogInInput) (User, string, error)
 	CheckUserAvailabilityByEmail(input SignUpInput) (bool, error)
 	GenerateToken(userId int, email string) (string, error)
+	ValidateToken(token string) (*jwt.Token, error)
 }
 
 type service struct {
@@ -112,4 +113,25 @@ func (service *service) GenerateToken(userId int, email string) (string, error) 
 	}
 
 	return signedToken, nil
+}
+
+func (service *service) ValidateToken(encodedToken string) (*jwt.Token, error) {
+
+	//* Parse jwt for get token with valid sign secret text
+	token, err := jwt.Parse(encodedToken, func(token *jwt.Token)(interface{}, error){
+		//* Check token signing method
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if (!ok) {
+			return nil, errors.New("invalid token")
+		}
+
+		return []byte("$2a$08$UcyjEygcPA/XaeUp85sQjuOhithx14/Ai3D5lYPixLrMrSQG2NIFy"), nil
+	})
+
+	if (err != nil) {
+		return token, err
+	}
+
+	return token, nil
+
 }
