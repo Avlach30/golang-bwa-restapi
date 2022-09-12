@@ -68,7 +68,7 @@ func (handler *userHandler) LogInHandler(context *gin.Context) {
 		return
 	}
 
-	user, err := handler.userService.LogIn(input)
+	user, token, err := handler.userService.LogIn(input)
 	if err != nil {
 		errorResponse := helper.ApiResponse(false, "Error occured", err.Error())
 
@@ -76,7 +76,7 @@ func (handler *userHandler) LogInHandler(context *gin.Context) {
 		return
 	}
 	
-	responseFormatter := FormatUserLoginResponse(user)
+	responseFormatter := FormatUserLoginResponse(user, token)
 	successResponse := helper.ApiResponse(true, "Log in successfully", responseFormatter)
 
 	context.JSON(http.StatusOK, successResponse)
