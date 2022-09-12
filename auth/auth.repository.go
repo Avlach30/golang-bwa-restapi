@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 type Repository interface {
 	Save(user User) (User, error)
 	FindByEmail(email string) (User, error)
+	UpdateTokenValue(token string, email string) (User, error)
 }
 
 type repository struct {
@@ -35,6 +36,20 @@ func (repo *repository) FindByEmail(email string) (User, error) {
 	if (err != nil) {
 		return user, err
 	} else {
+		return user, nil
+	}
+}
+
+func (repo *repository) UpdateTokenValue(token string, email string) (User, error) {
+	var user User
+
+	err := repo.db.Where("email = ?", email).Find(&user).Error
+	if (err != nil) {
+		return user, err
+	} else {
+		user.Token = token //* Update value
+		repo.db.Save(&user) //* Save updated value
+
 		return user, nil
 	}
 }
