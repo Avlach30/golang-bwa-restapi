@@ -9,6 +9,7 @@ import (
 type Service interface {
 	SignUp(input SignUpInput) (User, error)
 	LogIn(input LogInInput) (User, error)
+	CheckUserAvailabilityByEmail(input SignUpInput) (bool, error)
 }
 
 type service struct {
@@ -66,4 +67,20 @@ func (service *service) LogIn(input LogInInput) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (service *service) CheckUserAvailabilityByEmail(input SignUpInput) (bool, error) {
+	email := input.Email
+
+	user, err := service.repository.FindByEmail(email)
+	if (err != nil) {
+		return false, nil
+	}
+
+	//* If user exist
+	if (user.ID != 0) {
+		return true, errors.New("User already exist")
+	}
+
+	return false, nil
 }

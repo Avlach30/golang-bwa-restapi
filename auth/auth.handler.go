@@ -30,6 +30,15 @@ func (handler *userHandler) SignUpHandler(context *gin.Context) {
 		context.JSON(http.StatusUnprocessableEntity, errorResponse)
 		return
 	}
+
+	//* Calling service for checking user availability from email
+	isUserExist, err := handler.userService.CheckUserAvailabilityByEmail(input)
+	if (isUserExist) {
+		errorResponse := helper.ApiResponse(false, "Error occured", err.Error())
+		context.JSON(http.StatusBadRequest, errorResponse)
+		return
+	}
+
 	//* Memanggil SignUp service untuk memproses hasil konversi input
 	user, err := handler.userService.SignUp(input)
 	if err != nil {
