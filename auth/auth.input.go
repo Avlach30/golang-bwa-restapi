@@ -1,10 +1,11 @@
 package auth
 
-type SignUpInput struct {
-	Name       string `json:"name" binding:"required"` //* binding property for handling validation
-	Email      string `json:"email" binding:"required,email"`
-	Occupation string `json:"occupation" binding:"required"`
-	Password   string `json:"password" binding:"required,min=8"`
+type SignUpInput struct { 
+	Name           string `form:"name" binding:"required"`
+	Email          string `form:"email" binding:"required,email"`
+	Occupation     string `form:"occupation" binding:"required"`
+	Password       string `form:"password" binding:"required,min=8"`
+	AvatarFileName string
 }
 
 type LogInInput struct {
