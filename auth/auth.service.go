@@ -12,6 +12,7 @@ type Service interface {
 	CheckUserAvailabilityByEmail(input SignUpInput) (bool, error)
 	GenerateToken(userId int, email string) (string, error)
 	ValidateToken(token string) (*jwt.Token, error)
+	UploadAvatarImage(fileLocation string) (string, error)
 }
 
 type service struct {
@@ -20,6 +21,13 @@ type service struct {
 
 func NewService(repository Repository) *service {
 	return &service{repository}
+}
+
+func (service *service) UploadAvatarImage(fileLocation string) (string, error) {
+	user := User{}
+	user.AvatarFileName = fileLocation
+
+	return fileLocation, nil
 }
 
 //* Mendeklarasikan fungsi untuk memproses input supaya bisa diproses oleh repository
@@ -37,6 +45,11 @@ func (service *service) SignUp(input SignUpInput) (User, error) {
 	}
 	user.PasswordHash = string(hashedPw)
 	user.Role = "user"
+
+	user.AvatarFileName, err = service.UploadAvatarImage(input.AvatarFileName)
+	if (err) != nil {
+		return user, errors.New("failed to upload image")
+	}
 
 	//* Memanggil method Save dari repository untuk pemroses hasil mapping instance struct User
 	newUser, err := service.repository.Save(user)
