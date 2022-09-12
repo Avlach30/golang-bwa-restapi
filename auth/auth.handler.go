@@ -44,3 +44,31 @@ func (handler *userHandler) SignUpHandler(context *gin.Context) {
 
 	context.JSON(http.StatusCreated, successResponse)
 }
+
+func (handler *userHandler) LogInHandler(context *gin.Context) {
+	var input LogInInput
+
+	err := context.ShouldBindJSON(&input)
+	if err != nil {
+		errors := helper.ErrorValidationResponse(err)
+
+		errorMsg := gin.H{"errors": errors}
+
+		errorResponse := helper.ApiResponse(false, "Error occured", errorMsg)
+		context.JSON(http.StatusUnprocessableEntity, errorResponse)
+		return
+	}
+
+	user, err := handler.userService.LogIn(input)
+	if err != nil {
+		errorResponse := helper.ApiResponse(false, "Error occured", err.Error())
+
+		context.JSON(http.StatusUnauthorized, errorResponse)
+		return
+	}
+	
+	responseFormatter := FormatUserLoginResponse(user)
+	successResponse := helper.ApiResponse(true, "Log in successfully", responseFormatter)
+
+	context.JSON(http.StatusOK, successResponse)
+}
