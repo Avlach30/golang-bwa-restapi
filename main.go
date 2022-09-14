@@ -28,6 +28,10 @@ func main() {
 	campaignHandler := campaign.NewCampaignHandler(campaignService)
 
 	router := gin.Default()
+
+	router.Static("/campaign-images", "./campaign-images") //* Configure campaign-images accessible via request endpoint
+	router.Static("/images", "./images")
+
 	firstVerAPI := router.Group("/api/v1")
 
 	firstVerAPI.POST("/auth/signup", userHandler.SignUpHandler)
