@@ -13,6 +13,7 @@ type Service interface {
 	GenerateToken(userId int, email string) (string, error)
 	ValidateToken(token string) (*jwt.Token, error)
 	UploadAvatarImage(fileLocation string) (string, error)
+	FindUserById(id int) (User, error)
 }
 
 type service struct {
@@ -147,4 +148,17 @@ func (service *service) ValidateToken(encodedToken string) (*jwt.Token, error) {
 
 	return token, nil
 
+}
+
+func (service *service) FindUserById(id int) (User, error) {
+	user, err := service.repository.FindUserById(id)
+	if (err != nil) {
+		return user, err
+	} 
+
+	if (user.ID == 0) {
+		return user, errors.New("sorry, cannot find user with that id")
+	}
+
+	return user, nil
 }
