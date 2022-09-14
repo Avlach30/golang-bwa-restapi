@@ -1,11 +1,12 @@
 package main
 
 import (
+	"campaigns-restapi/auth"
+	"campaigns-restapi/campaign"
 	"log"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"campaigns-restapi/auth"
 )
 
 func main() {
@@ -22,11 +23,17 @@ func main() {
 	userService := auth.NewService(userRepository)
 	userHandler := auth.NewUserHandler(userService)
 
+	campaignRepository := campaign.NewRepository(db)
+	campaignService := campaign.NewService(campaignRepository)
+	campaignHandler := campaign.NewCampaignHandler(campaignService)
+
 	router := gin.Default()
 	firstVerAPI := router.Group("/api/v1")
 
 	firstVerAPI.POST("/auth/signup", userHandler.SignUpHandler)
 	firstVerAPI.POST("/auth/login", userHandler.LogInHandler)
+	
+	firstVerAPI.GET("/campaigns", campaignHandler.GetCampaigns)
 
 	router.Run()
 }
