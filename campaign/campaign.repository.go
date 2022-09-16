@@ -2,13 +2,13 @@ package campaign
 
 import (
 	"errors"
-
 	"gorm.io/gorm"
 )
 
 type Repository interface {
 	FindAll() ([]Campaign, error)
 	FindAllByUser(userId int) ([]Campaign, error)
+	FindSpecifiedCampaign(Id int)(Campaign, error)
 }
 
 type repository struct {
@@ -41,4 +41,20 @@ func (repository *repository) FindAllByUser(userId int) ([]Campaign, error) {
 
 	return campaigns, nil
 	
+}
+
+func (repostiory *repository) FindSpecifiedCampaign(Id int)(Campaign, error) {
+	var campaign Campaign
+
+	err :=  repostiory.db.Preload("User").Preload("CampaignImages").Where("id = ?", Id).Find(&campaign).Error
+	if (err != nil) {
+		return campaign, errors.New("failed to querying get specified campaign")
+	}
+
+	//* if data not found
+	if (campaign.ID == 0) {
+		return campaign, errors.New("data not found")
+	}
+
+	return campaign, nil
 }
