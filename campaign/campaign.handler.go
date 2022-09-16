@@ -31,6 +31,21 @@ func (handler *campaignHandler) GetCampaigns(context *gin.Context) {
 	context.JSON(http.StatusOK, response)
 }
 
+func (handler *campaignHandler) GetAllCampaignsByLoggedUser(context *gin.Context) {
+	//* Get logged user data
+	userId := context.MustGet("user").(auth.User).ID
+
+	campaigns, err := handler.service.FindAllCampaignsByLoggedUser(userId)
+	if (err != nil) {
+		errorResponse := helper.ApiResponse(false, "Error occured", err.Error())
+		context.JSON(http.StatusBadRequest, errorResponse)
+		return
+	}
+
+	response := helper.ApiResponse(true, "Get all campaigns by logged user successfully", FormatGetCampaignsResponse(campaigns))
+	context.JSON(http.StatusOK, response)
+}
+
 func (handler *campaignHandler) GetSpecifiedCampaign(context *gin.Context) {
 	var inputId GetSpecifiedCampaignInput
 
