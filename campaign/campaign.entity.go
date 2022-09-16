@@ -1,6 +1,9 @@
 package campaign
 
-import "time"
+import (
+	"campaigns-restapi/auth"
+	"time"
+)
 
 type Campaign struct {
 	ID               int
@@ -16,6 +19,7 @@ type Campaign struct {
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 	CampaignImages   []CampaignImage //* Implement relations with CampaignImages return an array
+	User             auth.User //* Implement relations with User
 }
 
 type CampaignImage struct {
