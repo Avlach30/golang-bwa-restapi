@@ -3,6 +3,7 @@ package main
 import (
 	"campaigns-restapi/auth"
 	"campaigns-restapi/campaign"
+	"campaigns-restapi/middleware"
 	"log"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -39,6 +40,7 @@ func main() {
 	
 	firstVerAPI.GET("/campaigns", campaignHandler.GetCampaigns)
 	firstVerAPI.GET("/campaigns/:id", campaignHandler.GetSpecifiedCampaign) //* Configure endpoint with params 'id'
+	firstVerAPI.POST("/campaigns", middleware.AuthorizationMiddleware(userService), campaignHandler.CreateNewCampaign)
 
 	router.Run()
 }
