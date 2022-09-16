@@ -38,6 +38,7 @@ func main() {
 	firstVerAPI.POST("/auth/login", userHandler.LogInHandler)
 	
 	firstVerAPI.GET("/campaigns", campaignHandler.GetCampaigns)
+	firstVerAPI.GET("/campaigns/:id", campaignHandler.GetSpecifiedCampaign) //* Configure endpoint with params 'id'
 
 	router.Run()
 }
