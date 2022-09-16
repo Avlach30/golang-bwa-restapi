@@ -1,6 +1,7 @@
 package campaign
 
 import (
+	"campaigns-restapi/auth"
 	"campaigns-restapi/helper"
 	"net/http"
 	"strconv"
@@ -49,4 +50,37 @@ func (handler *campaignHandler) GetSpecifiedCampaign(context *gin.Context) {
 
 	response := helper.ApiResponse(true, "Get specified campaign successfully", FormatGetSpecifiedCampaignResponse(campaign))
 	context.JSON(http.StatusOK, response)
+}
+
+func (handler *campaignHandler) CreateNewCampaign(context *gin.Context) {
+	//* Get logged user data
+	loggedUser := context.MustGet("user").(auth.User)
+
+	// fmt.Println(loggedUser)
+
+	var input CreateNewCampaignInput
+
+	err := context.ShouldBindJSON(&input)
+	if (err != nil) {
+		errors := helper.ErrorValidationResponse(err)
+
+		errorMsg := gin.H{"errors": errors}
+
+		errorResponse := helper.ApiResponse(false, "Error occured", errorMsg)
+		context.JSON(http.StatusUnprocessableEntity, errorResponse)
+		return
+	}
+
+	//* Assign logged user data for value of struct input of create new campaign
+	input.User = loggedUser
+
+	newCampaign, err := handler.service.CreateNewCampaign(input)
+	if (err != nil) {
+		errorResponse := helper.ApiResponse(false, "Error occured", err.Error())
+		context.JSON(http.StatusInternalServerError, errorResponse)
+		return
+	}
+
+	response := helper.ApiResponse(true, "Create new campaign successfully", FormatGetCampaignResponse(newCampaign))
+	context.JSON(http.StatusCreated, response)
 }
