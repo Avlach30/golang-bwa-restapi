@@ -9,6 +9,7 @@ import (
 
 type Service interface {
 	FindAllCampaigns(userId int) ([]Campaign, error)
+	FindAllCampaignsByLoggedUser(userId int) ([]Campaign, error)
 	FindSpecifiedCampaign(input GetSpecifiedCampaignInput) (Campaign, error)
 	CreateNewCampaign(input CreateNewCampaignInput) (Campaign, error)
 }
@@ -38,6 +39,22 @@ func (service *service) FindAllCampaigns(userId int) ([]Campaign, error) {
 
 	return campaigns, nil
 }
+
+func (service *service) FindAllCampaignsByLoggedUser(userId int) ([]Campaign, error) {
+	var campaigns []Campaign
+
+	if userId == 0 {
+		return campaigns, errors.New("unknown logged user")
+	}
+
+	campaigns, err := service.repository.FindAllByUser(userId)
+	if err != nil {
+		return campaigns, errors.New("failed to get all campaigns by logged user")
+	}
+
+	return campaigns, nil
+}
+
 
 func (service *service) FindSpecifiedCampaign(input GetSpecifiedCampaignInput) (Campaign, error) {
 	
