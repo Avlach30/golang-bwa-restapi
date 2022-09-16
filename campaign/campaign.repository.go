@@ -9,6 +9,7 @@ type Repository interface {
 	FindAll() ([]Campaign, error)
 	FindAllByUser(userId int) ([]Campaign, error)
 	FindSpecifiedCampaign(Id int)(Campaign, error)
+	Save(campaign Campaign) (Campaign, error)
 }
 
 type repository struct {
@@ -54,6 +55,15 @@ func (repostiory *repository) FindSpecifiedCampaign(Id int)(Campaign, error) {
 	//* if data not found
 	if (campaign.ID == 0) {
 		return campaign, errors.New("data not found")
+	}
+
+	return campaign, nil
+}
+
+func (repository *repository) Save(campaign Campaign) (Campaign, error) {
+	err := repository.db.Create(&campaign).Error
+	if (err != nil) {
+		return campaign, err
 	}
 
 	return campaign, nil
