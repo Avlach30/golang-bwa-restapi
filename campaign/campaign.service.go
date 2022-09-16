@@ -4,6 +4,7 @@ import "errors"
 
 type Service interface {
 	FindAllCampaigns(userId int) ([]Campaign, error)
+	FindSpecifiedCampaign(input GetSpecifiedCampaignInput) (Campaign, error)
 }
 
 type service struct {
@@ -30,4 +31,14 @@ func (service *service) FindAllCampaigns(userId int) ([]Campaign, error) {
 	}
 
 	return campaigns, nil
+}
+
+func (service *service) FindSpecifiedCampaign(input GetSpecifiedCampaignInput) (Campaign, error) {
+	
+	campaign, err := service.repository.FindSpecifiedCampaign(input.ID)
+	if (err != nil) {
+		return campaign, errors.New("data not found")
+	}
+
+	return campaign, nil
 }
