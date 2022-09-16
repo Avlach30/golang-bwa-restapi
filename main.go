@@ -39,6 +39,7 @@ func main() {
 	firstVerAPI.POST("/auth/login", userHandler.LogInHandler)
 	
 	firstVerAPI.GET("/campaigns", campaignHandler.GetCampaigns)
+	firstVerAPI.GET("/profile/campaigns", middleware.AuthorizationMiddleware(userService), campaignHandler.GetAllCampaignsByLoggedUser)
 	firstVerAPI.GET("/campaigns/:id", campaignHandler.GetSpecifiedCampaign) //* Configure endpoint with params 'id'
 	firstVerAPI.POST("/campaigns", middleware.AuthorizationMiddleware(userService), campaignHandler.CreateNewCampaign)
 
